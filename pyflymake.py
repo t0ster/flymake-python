@@ -103,8 +103,8 @@ class PylintRunner(LintRunner):
     output_matcher = re.compile(
         r'(?P<filename>[^:]+):'
         r'(?P<line_number>\d+):'
-        r'\s*\[(?P<error_type>[WECR])(?P<error_number>[^,]+),'
-        r'\s*(?P<context>[^\]]+)\]'
+        r'\s*\[(?P<error_type>[WECRF])(?P<error_number>[^,]+)'
+        r'(,\s*(?P<context>[^\]]+))?\]'
         r'\s*(?P<description>.*)$')
 
     command = 'python'
@@ -138,7 +138,7 @@ class PylintRunner(LintRunner):
                 '--output-format', 'parseable',
                 '--include-ids', 'y',
                 '--reports', 'n',
-                '--disable-msg=' + ','.join(self.operative_ignore_codes))
+                '--disable=' + ','.join(self.operative_ignore_codes))
 
 
 class PycheckerRunner(LintRunner):
