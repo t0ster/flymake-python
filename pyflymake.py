@@ -138,7 +138,11 @@ class PylintRunner(LintRunner):
                 '--output-format', 'parseable',
                 '--include-ids', 'y',
                 '--reports', 'n',
-                '--disable=' + ','.join(self.operative_ignore_codes))
+                '--disable=' + ','.join(self.operative_ignore_codes),
+                '--generated-members=' + self.config.GENERATED_MEMBERS,
+                '--ignore-iface-methods=' + self.config.IGNORE_IFACE_METHODS,
+                '--dummy-variables-rgx=' + self.config.DUMMY_VARIABLES_RGX,
+                )
 
 
 class PycheckerRunner(LintRunner):
@@ -266,7 +270,7 @@ class TestRunner(LintRunner):
 
 def find_config(path, trigger_type):
     if path in ('', '/'):
-        module = None
+        module = type('Config', (object,), {})
     else:
         try:
             parent_dir = os.path.join(path, '.pyflymakerc')
@@ -274,8 +278,18 @@ def find_config(path, trigger_type):
             __builtins__.TRIGGER_TYPE = trigger_type
             module = imp.load_source('config', parent_dir)
             del __builtins__.TRIGGER_TYPE
+
+            # Preparing config object
+            for key, value in DEFAULT_CONFIG.items():
+                if not hasattr(module, key):
+                    setattr(module, key, value)
+
+            module.IGNORE_IFACE_METHODS = ",".join(module.IGNORE_IFACE_METHODS)
+            module.GENERATED_MEMBERS = ",".join(module.GENERATED_MEMBERS)
+    
         except IOError:
             module = find_config(os.path.split(path)[0], trigger_type)
+
     return module
 
 
@@ -290,7 +304,11 @@ DEFAULT_CONFIG = dict(
     PEP8=True,
     PYFLAKES=True,
     IGNORE_CODES=(),
-    USE_SANE_DEFAULTS=True)
+    USE_SANE_DEFAULTS=True,
+    IGNORE_IFACE_METHODS=(),
+    GENERATED_MEMBERS=(),
+    DUMMY_VARIABLES_RGX="_|dummy",
+)
 
 
 def main():
@@ -320,10 +338,8 @@ def main():
         format='%(levelname)-8s %(message)s')
 
     config = find_config(os.path.realpath(args[0]), options.trigger_type)
-    for key, value in DEFAULT_CONFIG.items():
-        if not hasattr(config, key):
-            setattr(config, key, value)
 
+    # TODO: refactor
     for option in 'virtualenv', 'ignore_codes':
         value = getattr(options, option)
         if value is not None:
