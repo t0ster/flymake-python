@@ -279,16 +279,16 @@ def find_config(path, trigger_type):
             module = imp.load_source('config', parent_dir)
             del __builtins__.TRIGGER_TYPE
 
-            # Preparing config object
-            for key, value in DEFAULT_CONFIG.items():
-                if not hasattr(module, key):
-                    setattr(module, key, value)
-
-            module.IGNORE_IFACE_METHODS = ",".join(module.IGNORE_IFACE_METHODS)
-            module.GENERATED_MEMBERS = ",".join(module.GENERATED_MEMBERS)
-    
         except IOError:
-            module = find_config(os.path.split(path)[0], trigger_type)
+            return find_config(os.path.split(path)[0], trigger_type)
+
+    # Preparing config object
+    for key, value in DEFAULT_CONFIG.items():
+        if not hasattr(module, key):
+            setattr(module, key, value)
+
+    module.IGNORE_IFACE_METHODS = ",".join(module.IGNORE_IFACE_METHODS)
+    module.GENERATED_MEMBERS = ",".join(module.GENERATED_MEMBERS)
 
     return module
 
