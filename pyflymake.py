@@ -142,6 +142,7 @@ class PylintRunner(LintRunner):
                 '--generated-members=' + self.config.GENERATED_MEMBERS,
                 '--ignore-iface-methods=' + self.config.IGNORE_IFACE_METHODS,
                 '--dummy-variables-rgx=' + self.config.DUMMY_VARIABLES_RGX,
+                '--good-names=' + self.config.GOOD_NAMES,
                 )
 
 
@@ -308,6 +309,7 @@ DEFAULT_CONFIG = dict(
     IGNORE_IFACE_METHODS=(),
     GENERATED_MEMBERS=(),
     DUMMY_VARIABLES_RGX="_|dummy",
+    GOOD_NAMES='i,j,k,ex,Run,_',
 )
 
 
