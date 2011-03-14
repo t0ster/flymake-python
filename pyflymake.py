@@ -138,11 +138,6 @@ class PylintRunner(LintRunner):
                 '--output-format', 'parseable',
                 '--include-ids', 'y',
                 '--reports', 'n',
-                '--disable=' + ','.join(self.operative_ignore_codes),
-                '--generated-members=' + self.config.GENERATED_MEMBERS,
-                '--ignore-iface-methods=' + self.config.IGNORE_IFACE_METHODS,
-                '--dummy-variables-rgx=' + self.config.DUMMY_VARIABLES_RGX,
-                '--good-names=' + self.config.GOOD_NAMES,
                 )
 
 
