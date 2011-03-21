@@ -243,7 +243,6 @@ class TestRunner(LintRunner):
     output_matcher = re.compile(
         r'(?P<filename>[^:]+):'
         r'(?P<line_number>[^:]+): '
-        r'In (?P<function>[^:]+): '
         r'(?P<error_number>[^:]+): '
         r'(?P<description>.+)$')
 
