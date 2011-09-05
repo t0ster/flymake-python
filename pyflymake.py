@@ -230,7 +230,10 @@ class Pep8Runner(LintRunner):
 
     @property
     def run_flags(self):
-        return '--repeat', '--ignore=' + ','.join(self.config.IGNORE_CODES)
+        sane_default_ignore_codes = set([
+                'E501'])
+        ignore = sane_default_ignore_codes | set(self.config.IGNORE_CODES)
+        return '--repeat', '--ignore=' + ','.join(ignore)
 
 
 class TestRunner(LintRunner):
